@@ -78,10 +78,12 @@ housing["bedrooms_ratio"] = housing["total_bedrooms"] / housing["total_rooms"]
 housing["people_per_house"] = housing["population"] / housing["households"]
 # %%
 # Machine Learning cleaning
-housing = strat_train_set.drop(["median_house_value", "ocean_proximity"], axis=1)
+housing = strat_train_set.drop(["median_house_value"], axis=1)
 housing_labels = strat_train_set["median_house_value"].copy()
 
 # Impute missing data
 from sklearn.impute import SimpleImputer
 imputer = SimpleImputer(strategy="median")
+housing_num = housing.select_dtypes(include=[np.number])
+
 # %%
