@@ -85,5 +85,10 @@ housing_labels = strat_train_set["median_house_value"].copy()
 from sklearn.impute import SimpleImputer
 imputer = SimpleImputer(strategy="median")
 housing_num = housing.select_dtypes(include=[np.number])
-
+## fitting the data just calculates the median for each column
+imputer.fit(housing_num)
+## transforming the data uses the fitted values in the dataset
+## this creates a numpy array that will need to be wrapped into a dataframe
+X = imputer.transform(housing_num)
+housing_tr = pd.DataFrame(X, columns = housing_num.columns, index = housing_num.index)
 # %%
