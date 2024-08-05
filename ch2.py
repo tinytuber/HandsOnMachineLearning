@@ -92,3 +92,5 @@ imputer.fit(housing_num)
 X = imputer.transform(housing_num)
 housing_tr = pd.DataFrame(X, columns = housing_num.columns, index = housing_num.index)
 # %%
+print('test')
+# %%
