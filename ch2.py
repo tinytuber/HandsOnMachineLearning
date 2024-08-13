@@ -274,3 +274,38 @@ grid_search = GridSearchCV(full_pipeline, param_grid, cv=3,
                            scoring='neg_root_mean_squared_error')
 grid_search.fit(housing, housing_labels)
 # %%
+# Random Search instead of Grid Search. Allows for finding hidden answers
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+
+param_distribs = {'preprocessing__geo__n_clusters': randint(low=3, high=50),
+                  'random_forest__max_features': randint(low=2, high=20)}
+
+rnd_search = RandomizedSearchCV(
+    full_pipeline, param_distributions=param_distribs, n_iter=10, cv=3,
+    scoring='neg_root_mean_squared_error', random_state=42)
+
+rnd_search.fit(housing, housing_labels)
+# %%
+final_model = rnd_search.best_estimator_
+# %%
+# Model evaluation
+from sklearn.metrics import mean_squared_error
+X_test = strat_test_set.drop("median_house_value", axis=1)
+y_test = strat_test_set["median_house_value"].copy()
+
+final_predictions = final_model.predict(X_test)
+
+final_rmse = mean_squared_error(y_test, final_predictions, squared=False)
+print(final_rmse)  # prints 41424.40026462184
+# %%
+# Support Vector Machine
+from sklearn.svm import SVR
+svr_reg = make_pipeline(preprocessing, SVR())
+svr_reg.fit(housing, housing_labels)
+
+svr_score = -cross_val_score(svr_reg, housing, housing_labels,
+                                scoring="neg_root_mean_squared_error", cv=3)
+# %%
+
+# %%
